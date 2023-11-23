@@ -15,6 +15,11 @@ module.exports = {
       colors: {
         main: '#DF6951',
         black: '#4D4D4D',
+        buttonHover: '#f5f5f5',
+        dividerFill: '#e0e0e0',
+        boxBorder: '#cccccc',
+        buttonHover1:'#FFF5F3',
+        buttonClick1:'#FFEFEC'
       },
     },
   },

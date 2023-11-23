@@ -18,7 +18,9 @@ const routes: RouteType[] = [
   { 
     path: ROUTES.HOME,
     title: 'Roadventure',
-    element: HomePage },
+    element: HomePage,
+    isPrivate: false
+  },
 
   {
     path: '*',
