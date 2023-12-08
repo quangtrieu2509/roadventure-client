@@ -1,7 +1,6 @@
 .header-box {
   display: flex;
   height: inherit;
-  // padding: 0 24px;
 }
 
 .header-nav {
@@ -9,13 +8,7 @@
   width: inherit;
   display: flex;
   justify-content: space-between;
-  // background: moccasin;
   align-items: center;
-}
-
-#img {
-  cursor: pointer;
-  width: inherit;
 }
 
 .ant-dropdown-menu {

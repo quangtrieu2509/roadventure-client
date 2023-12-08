@@ -19,7 +19,8 @@ module.exports = {
         dividerFill: '#e0e0e0',
         boxBorder: '#cccccc',
         buttonHover1:'#FFF5F3',
-        buttonClick1:'#FFEFEC'
+        buttonClick1:'#FFEFEC',
+        subText: '#333333'
       },
     },
   },

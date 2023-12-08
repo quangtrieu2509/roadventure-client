@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import { IMAGE_PATH, ROUTES } from "../../constants";
-import { menuItems } from "./menuItems";
-import { PUBLIC_URL, REACT_APP_BASE_URL } from "../../configs";
-import './index.style.scss';
-import DropDown from "./Dropdown";
 import { useState } from "react";
+
+import './index.style.scss';
+import { IMAGE_PATH } from "../../constants";
+import { featureItems } from "./menuItems";
+import DropDown from "./Dropdown";
+import User from "./User";
 
 export default function Header() {
   const [isTop, setIsTop] = useState<boolean>(true)
@@ -23,14 +23,13 @@ export default function Header() {
         <nav className="header-nav">
           <div className="header-item flex w-52">
             <img
-              id="img"
               alt="#"
               src={IMAGE_PATH.FULL_LOGO}
-              className="image"
+              className="image w-full cursor-pointer"
             />
           </div>
           <div className="header-item flex">
-            {menuItems.map((val, index) => (
+            {featureItems.map((val, index) => (
               <DropDown
                 menuItems={val.items}
                 name={val.name}
@@ -39,12 +38,10 @@ export default function Header() {
             ))}
           </div>
           <div className="header-item flex justify-end w-52">
-            <button className='font-semibold text-base border-2 px-5 py-2 rounded-lg mx-1 bg-transparent hover:bg-buttonHover cursor-pointer'>
-              Sign in
-            </button>
-            <button className='font-semibold text-base border-none px-5 py-2.5 rounded-full mx-px bg-transparent hover:bg-buttonHover cursor-pointer'>
+            <User/>
+            <span className='font-semibold text-base border-none px-5 py-2.5 rounded-full mx-px bg-transparent hover:bg-buttonHover cursor-pointer'>
               USD
-            </button>
+            </span>
           </div>
 
         </nav>

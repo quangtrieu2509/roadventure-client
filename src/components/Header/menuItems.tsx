@@ -2,7 +2,7 @@
 import Label from './Label';
 import { ROUTES } from '../../constants';
 
-export const menuItems = [
+export const featureItems = [
   {
     name: 'Explore',
     items: [
@@ -89,3 +89,51 @@ export const menuItems = [
     route: 'more',
   },
 ];
+
+export const userItems = {
+  name: 'User',
+  items: [
+    {
+      key: '1',
+      label: (
+        <Label
+          url={ROUTES.PRODUCT_SIGMA_DRM}
+          title="Notifications"
+        />
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Label
+          url={ROUTES.PRODUCT_SIGMA_DRM}
+          title="Profile"
+        />
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Label
+          url={ROUTES.PRODUCT_SIGMA_DRM}
+          title="Settings"
+        />
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <Label
+          url={ROUTES.HOME}
+          title="Sign out"
+          event={
+            () => {
+              console.log("logout")
+              localStorage.removeItem('token')
+            }
+          }
+        />
+      ),
+    },
+  ]
+};
