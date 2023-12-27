@@ -1,9 +1,9 @@
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { GoogleOAuthProvider } from '@react-oauth/google'
+import React from "react"
+import { BrowserRouter } from "react-router-dom"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
-import AppRouter from './router'
-import { GG_CLIENT_ID } from './configs'
+import AppRouter from "./router"
+import { GG_CLIENT_ID } from "./configs"
 
 const App: React.FC = () => {
   return (

@@ -1,22 +1,22 @@
-import React from 'react';
-import BaseLayout from '../BaseLayout';
-import useDocumentTitle from '../../hooks';
-import { useSelector } from 'react-redux';
-import { Button, Result } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../constants';
-import { roles } from '../../constants';
+import React from "react"
+import BaseLayout from "../BaseLayout"
+import useDocumentTitle from "../../hooks"
+import { useSelector } from "react-redux"
+import { Button, Result } from "antd"
+import { useNavigate } from "react-router-dom"
+import { ROUTES } from "../../constants"
+import { roles } from "../../constants"
 
 type PrivateRouteProps = {
-  title?: string;
-  children: React.ReactNode;
-};
+  title?: string
+  children: React.ReactNode
+}
 
 const PrivateRoute = (props: PrivateRouteProps) => {
-  useDocumentTitle(props.title);
-  const navigate = useNavigate();
-  const token = useSelector((state: any) => state.authReducer.token);
-  const role = useSelector((state: any) => state.authReducer.role);
+  useDocumentTitle(props.title)
+  const navigate = useNavigate()
+  const token = useSelector((state: any) => state.authReducer.token)
+  const role = useSelector((state: any) => state.authReducer.role)
 
   return (
     <BaseLayout>
@@ -35,7 +35,7 @@ const PrivateRoute = (props: PrivateRouteProps) => {
         />
       )}
     </BaseLayout>
-  );
-};
+  )
+}
 
-export default PrivateRoute;
+export default PrivateRoute

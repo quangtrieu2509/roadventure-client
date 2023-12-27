@@ -1,4 +1,4 @@
 export interface RRError {
-  ec: number;
-  msg: string;
+  ec: number
+  msg: string
 }

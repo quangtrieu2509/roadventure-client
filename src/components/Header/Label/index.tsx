@@ -1,16 +1,29 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 
 interface LabelProps {
-  url: string;
-  title: string;
-  event?: ()=>void;
+  url?: string
+  title: string
+  event?: () => void
 }
-export default function Label({ url, title, event = undefined }: LabelProps) {
+export default function Label({
+  url = undefined,
+  title,
+  event = undefined,
+}: LabelProps) {
+
+  const navigate = useNavigate()
+
+  const handleNavigate = () => {
+    if (url !== undefined) {
+      navigate(url)
+    }
+  }
+
   return (
-    <Link to={url} onClick={event}>
-      <div className="w-50" >
+    <div onClick={handleNavigate}>
+      <div onClick={event}>
         <p className="m-0 text-base font-medium my-1">{title}</p>
       </div>
-    </Link>
-  );
+    </div>
+  )
 }

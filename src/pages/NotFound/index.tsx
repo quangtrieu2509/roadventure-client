@@ -1,12 +1,12 @@
-import { Button, Result } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../../constants';
+import { Button, Result } from "antd"
+import { useNavigate } from "react-router-dom"
+import { ROUTES } from "../../constants"
 
 const NotFound = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const backHome = () => {
-    navigate(ROUTES.HOME);
-  };
+    navigate(ROUTES.HOME)
+  }
 
   return (
     <Result
@@ -19,7 +19,7 @@ const NotFound = () => {
         </Button>
       }
     />
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

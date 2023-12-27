@@ -1,65 +1,56 @@
-import { useGoogleLogin } from "@react-oauth/google";
-import { useDispatch } from "react-redux";
+import { useGoogleLogin } from "@react-oauth/google"
+import { useDispatch } from "react-redux"
 
-import './index.style.scss'
-import { apiCaller } from "../../../api";
-import { authApi } from "../../../api";
-import { BASE_URL } from "../../../configs";
-import { ENDPOINTS, IMAGE_PATH } from "../../../constants";
-import axios from "axios";
-import { RRError } from "../../../types";
-import { setEmailSignInView } from "../../../redux/Auth";
+import "./index.style.scss"
+import "../index.style.scss"
+import { apiCaller } from "../../../api"
+import { authApi } from "../../../api"
+import { IMAGE_PATH } from "../../../constants"
+import { setView, setUser, setGoogleToken } from "../../../redux/Auth"
+import { messages } from "../../../constants/message"
+import { APIResponse } from "../../../types/response"
+import { AuthView } from "../../../redux/Auth/types"
+import { setAuthStorage } from "../../../utils/Auth"
 
 export default function SignIn() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const signInByGoogle = useGoogleLogin({
-    onSuccess: async tokenResponse => {
-      const response = await apiCaller(
-        {
-          request: authApi.signinByGoogle(tokenResponse.access_token)
-        }
-      )
-      // const response = await axios.get(
-      //   BASE_URL + ENDPOINTS.GOOGLE_AUTH, 
-      //   { 
-      //     headers:
-      //       { 
-      //         Authorization: `Bearer a${tokenResponse.access_token}` 
-      //       } 
-      //   }
-      // )
-      // .catch((error) => {
-      //   console.log(error.response.data)
-      // })
+    onSuccess: async (tokenResponse) => {
+      const GoogleToken = tokenResponse.access_token
+      dispatch(setGoogleToken(GoogleToken))
+      const res = await apiCaller(authApi.signInByGoogle(GoogleToken))
 
-      if (response !== null) {
-        const responseJSON = response as unknown as RRError
-        if (responseJSON.ec === 210) {
-          alert(responseJSON.msg)
-        }
-        else {
-          localStorage.setItem('token', response.data.accessToken)
-          window.location.reload()
+      if (res !== null) {
+        const apiResponse = res as APIResponse
+
+        if (apiResponse.ec === messages.CONTINUE_SIGN_IN.ec) {
+          dispatch(setView(AuthView.GOOGLE_SIGNUP_VIEW))
+          dispatch(setUser(apiResponse.data))
+        } else if (apiResponse.ec === messages.CONNECT_GOOGLE_ACCOUNT.ec) {
+          dispatch(setView(AuthView.CONNECT_GG_ACCOUNT_VIEW))
+          dispatch(setUser(apiResponse.data.user))
+
+          setAuthStorage(res.data)
+        } else {
+          setAuthStorage(res.data)
+          window.location.reload() // fix here
+          //dispatch(setState(false))
         }
       }
     },
-  });
+  })
 
   const signInByEmail = () => {
-    dispatch(setEmailSignInView())
+    dispatch(setView(AuthView.EMAIL_SIGNIN_VIEW))
   }
 
   return (
-    <div className="signin-page w-96 px-10 pt-6 pb-10" style={{ fontFamily: "Poppins" }}>
+    <div className="auth-page">
       <div className="signin-header">
         <div className="w-full flex justify-center">
           <div className="w-12">
-            <img
-              alt="#"
-              src={IMAGE_PATH.LOGO}
-              className="image w-full"
-            />
+            <img alt="#" src={IMAGE_PATH.LOGO} className="image w-full" />
           </div>
         </div>
         <p className="text-2xl font-semibold mt-2 mb-12">
@@ -70,7 +61,8 @@ export default function SignIn() {
       </div>
       <div className="signin-body flex-col pb-2">
         <div>
-          <div className="signin-btn hover:bg-buttonHover"
+          <div
+            className="signin-btn hover:bg-buttonHover"
             onClick={() => signInByGoogle()}
           >
             <div className="signin-btn-icon">
@@ -84,7 +76,8 @@ export default function SignIn() {
           </div>
         </div>
         <div>
-          <div className="signin-btn hover:bg-buttonHover"
+          <div
+            className="signin-btn hover:bg-buttonHover"
             onClick={signInByEmail}
           >
             <div className="signin-btn-icon">
@@ -98,13 +91,6 @@ export default function SignIn() {
           </div>
         </div>
       </div>
-      {/* <div className="signin-footer">
-        <p className="px-7 mt-24 mb-0 text-xs text-subText text-center">
-          By proceeding, you agree to our <u className="cursor-pointer">Terms of Use</u> and confirm 
-          you have read our <u className="cursor-pointer">Privacy and Cookie Statement</u>.
-        </p>
-      </div> */}
-      
     </div>
-  );
+  )
 }

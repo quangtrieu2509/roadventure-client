@@ -1,46 +1,86 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import axios, { type AxiosError } from 'axios';
+import axios, { type AxiosError } from "axios"
 
-import { BASE_URL } from '../configs';
-import { RRError } from '../types';
-import CustomError from '../utils/CustomError';
+import { BASE_URL } from "../configs"
+import { RRError } from "../types"
+import CustomError from "../utils/CustomError"
+import { messages } from "../constants/message"
+import { Modal } from "antd"
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token")
 const axiosClient = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'content-type': 'application/json',
+    "content-type": "application/json",
     common: {
       Authorization: `Bearer ${token}`,
     },
   },
-});
+})
 
 // axiosClient.interceptors.request.use(async (config) => {
 //   // Handle token here ...
 //   return config;
 // });
+
 axiosClient.interceptors.response.use(
   (response) => {
     if (response && response.data) {
-      return response.data;
+      return response.data
     }
-    return response;
+    return response
   },
   (error: AxiosError) => {
     if (!error.response) {
-      console.error('Unknown error:', error.message);
-      return;
+      console.error("Unknown error:", error.message)
+      return
     }
-
-    const { status, data } = error.response;
+    const { status, data } = error.response
     if (status >= 500) {
       // TODO: Show server error message
     } else if (400 <= status && status < 500) {
-      // alert((data as RRError).msg)
-      throw new CustomError(data as RRError);
-      
+      switch ((data as RRError).ec) {
+        case messages.USERNAME_EXISTED.ec: {
+          Modal.error({
+            title: "Error",
+            content: "Username existed already. Try another.",
+            className: "error-modal",
+            okType: "danger",
+            centered: true,
+          })
+          break
+        }
+        case messages.EMAIL_EXISTED.ec: {
+          Modal.error({
+            title: "Error",
+            content: "Email existed already. Try another.",
+            className: "error-modal",
+            okType: "danger",
+            centered: true,
+          })
+          break
+        }
+        case messages.SIGN_IN_ERROR.ec: {
+          Modal.error({
+            title: "Error",
+            content: "Wrong sign-in information. Try again.",
+            className: "error-modal",
+            okType: "danger",
+            centered: true,
+          })
+          break
+        }
+        case messages.ACCESS_TOKEN_EXPIRED.ec: {
+          alert(messages.ACCESS_TOKEN_EXPIRED.msg)
+          break
+        }
+        case messages.ACCESS_TOKEN_INVALID.ec: {
+          alert(messages.ACCESS_TOKEN_INVALID.msg)
+          break
+        }
+      }
+      throw new CustomError(data as RRError)
     }
   },
-);
-export default axiosClient;
+)
+export default axiosClient

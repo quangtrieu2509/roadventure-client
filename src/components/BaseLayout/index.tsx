@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react"
 
-import Header from '../Header';
-import Footer from '../Footer';
+import Header from "../Header"
+import Footer from "../Footer"
 // import ScrollToTopButton from '../ScrollToTop';
 
 interface BaseLayoutProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 function BaseLayout(props: BaseLayoutProps) {
@@ -16,7 +16,7 @@ function BaseLayout(props: BaseLayoutProps) {
       {/* <ScrollToTopButton /> */}
       <Footer />
     </div>
-  );
+  )
 }
 
-export default BaseLayout;
+export default BaseLayout

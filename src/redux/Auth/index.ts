@@ -1,42 +1,45 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { AuthView } from './types'
-// import { SignInActionTypes, SignInProps, SignInState } from "./actionTypes"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { AuthView, IUser } from "./types"
 
 // Define a type for the slice state
 interface AuthState {
-  currentView: AuthView
+  view: AuthView
+  state: boolean
+  user: IUser | undefined
+  GoogleToken: string | undefined
 }
 
 // Define the initial state using that type
 const initialState: AuthState = {
-  currentView: AuthView.SIGNIN_VIEW,
+  view: AuthView.SIGNIN_VIEW,
+  state: false,
+  user: undefined,
+  GoogleToken: undefined
 }
 
 export const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setSignInView: (state) => {
-      state.currentView = AuthView.SIGNIN_VIEW
+    setView: (state, action: PayloadAction<AuthView>) => {
+      state.view = action.payload
     },
-    setEmailSignInView: (state) => {
-      state.currentView = AuthView.EMAIL_SIGNIN_VIEW
+    setState: (state, action: PayloadAction<boolean>) => {
+      state.state = action.payload
     },
-    setSignUpView: (state) => {
-      state.currentView = AuthView.SIGNUP_VIEW
+    setUser: (state, action: PayloadAction<IUser | undefined>) => {
+      state.user = action.payload
+    },
+    setGoogleToken: (state, action: PayloadAction<string | undefined>) => {
+      state.GoogleToken = action.payload
     }
-  },
+  }
 })
 
-export const { 
-  setEmailSignInView, 
-  setSignInView, 
-  setSignUpView 
-} = authSlice.actions
+export const { setView, setState, setUser, setGoogleToken } = authSlice.actions
 
 // // Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.counter.value
-export const getCurrentView = (state: any) => state.authReducer.currentView;
+export const getState = (state: any) => state.authReducer
 
 export default authSlice.reducer
