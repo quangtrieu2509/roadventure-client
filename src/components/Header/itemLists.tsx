@@ -53,8 +53,17 @@ export const featureItems = [
     route: "community",
   },
   {
-    name: "Plan a trip",
-    items: [],
+    name: "Make a trip",
+    items: [
+      {
+        key: "1",
+        label: <Label url={ROUTES.SERVICE} title={"Make your own trip"} />,
+      },
+      {
+        key: "2",
+        label: <Label url={ROUTES.SERVICE} title="Guide" />,
+      },
+    ],
     route: "trips",
   },
   {

@@ -14,6 +14,7 @@ export const setLocalStorage = (
 }
 
 export const removeLocalStorage = () => {
+  localStorage.removeItem("id")
   localStorage.removeItem("token")
   localStorage.removeItem("username")
   localStorage.removeItem("familyName")
@@ -35,6 +36,7 @@ export const getLocalStorage = (...keys: Array<string>) => {
 export const setAuthStorage = (data: any) => {
   const { user, accessToken } = data
     setLocalStorage(
+      { key: "id", value: user.id },
       { key: "token", value: accessToken },
       { key: "username", value: user.username },
       { key: "familyName", value: user.familyName },

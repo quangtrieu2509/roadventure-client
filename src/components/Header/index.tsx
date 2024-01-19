@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 import "./index.style.scss"
 import { IMAGE_PATH } from "../../constants"
-import { featureItems } from "./menuItems"
+import { featureItems } from "./itemLists"
 import DropDown from "./Dropdown"
 import User from "./User"
 import { SearchOutlined } from "@ant-design/icons"
@@ -40,7 +40,7 @@ export default function Header() {
 
   return (
     <header
-      className={`h-16 flex justify-center bg-white ${
+      className={`h-16 flex justify-center bg-white smooth-trans ${
         isAtHome? (isTop ? "header-at-top" : "header-normal") : "header-normal"
       }`}
     >

@@ -17,7 +17,6 @@ function DropDown({ menuItems, name }: DropDownProps) {
         trigger={["click"]}
         //onOpenChange={() => {}}
         className="header-dropdown"
-        autoAdjustOverflow={false}
       >
         <span
           className="font-semibold text-base border-none px-4 py-2.5 rounded-full mx-px bg-transparent hover:bg-buttonHover cursor-pointer"

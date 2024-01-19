@@ -22,7 +22,7 @@ export default function Label({
   return (
     <div onClick={handleNavigate}>
       <div onClick={event}>
-        <p className="m-0 text-base font-medium my-1">{title}</p>
+        <p className="text-base font-medium m-0 px-2.5 py-2">{title}</p>
       </div>
     </div>
   )

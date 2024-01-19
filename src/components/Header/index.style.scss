@@ -1,11 +1,7 @@
 .header-at-top {
   padding-top: 0.5rem/* 8px */;
-  transition: all 0.15s ease-in-out;
+  // transition: all 0.15s ease-in-out;
   border-color: #e0e0e0;
-}
-
-.hidden {
-  transition: all 0.5s ease-in-out !important;
 }
 
 .header-normal {
@@ -13,7 +9,7 @@
   border-width: 0;
   border-bottom-width: 1px;
   border-color: #e0e0e0;
-  transition: all 0.2s ease-in-out;
+  // transition: all 0.15s ease-in-out;
 }
 
 .header-box {

@@ -3,7 +3,7 @@ import { Dropdown, Modal } from "antd"
 import { useDispatch, useSelector } from "react-redux"
 
 import { IMAGE_PATH } from "../../../constants"
-import { userItems } from "../menuItems"
+import { userItems } from "../itemLists"
 import SignIn from "../../../pages/Auth/SignIn"
 import EmailSignIn from "../../../pages/Auth/EmailSignIn"
 import { getState, setView, setState } from "../../../redux/Auth"
