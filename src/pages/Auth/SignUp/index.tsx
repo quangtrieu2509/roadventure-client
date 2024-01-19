@@ -18,11 +18,11 @@ export default function SingUp() {
   const dispatch = useDispatch()
 
   const goBackSignInView = () => {
-    dispatch(setView(AuthView.SIGNIN_VIEW))
+    dispatch(setView(AuthView.SIGNIN))
   }
 
   const goToEmailSignInView = () => {
-    dispatch(setView(AuthView.EMAIL_SIGNIN_VIEW))
+    dispatch(setView(AuthView.EMAIL_SIGNIN))
   }
 
   const signUpByEmail = async (values: any) => {

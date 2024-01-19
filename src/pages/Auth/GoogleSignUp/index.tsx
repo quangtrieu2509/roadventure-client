@@ -13,7 +13,7 @@ export default function GoogleSignUp() {
   const { user, GoogleToken } = useSelector(getState)
 
   const goBackSignInView = () => {
-    dispatch(setView(AuthView.SIGNIN_VIEW))
+    dispatch(setView(AuthView.SIGNIN))
   }
 
   const createGoogleAccount = async (values: any) => {

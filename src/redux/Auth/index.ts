@@ -3,7 +3,7 @@ import { AuthView, IUser } from "./types"
 
 // Define a type for the slice state
 interface AuthState {
-  view: AuthView
+  view: JSX.Element
   state: boolean
   user: IUser | undefined
   GoogleToken: string | undefined
@@ -11,7 +11,7 @@ interface AuthState {
 
 // Define the initial state using that type
 const initialState: AuthState = {
-  view: AuthView.SIGNIN_VIEW,
+  view: AuthView.SIGNIN,
   state: false,
   user: undefined,
   GoogleToken: undefined
@@ -22,7 +22,7 @@ export const authSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    setView: (state, action: PayloadAction<AuthView>) => {
+    setView: (state, action: PayloadAction<JSX.Element>) => {
       state.view = action.payload
     },
     setState: (state, action: PayloadAction<boolean>) => {

@@ -13,11 +13,11 @@ export default function EmailSignIn() {
   const dispatch = useDispatch()
 
   const goBackSignInView = () => {
-    dispatch(setView(AuthView.SIGNIN_VIEW))
+    dispatch(setView(AuthView.SIGNIN))
   }
 
   const goToSignUpView = () => {
-    dispatch(setView(AuthView.SIGNUP_VIEW))
+    dispatch(setView(AuthView.SIGNUP))
   }
 
   const signInByEmail = async (values: any) => {

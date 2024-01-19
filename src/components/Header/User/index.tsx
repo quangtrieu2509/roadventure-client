@@ -4,13 +4,8 @@ import { useDispatch, useSelector } from "react-redux"
 
 import { IMAGE_PATH } from "../../../constants"
 import { userItems } from "../itemLists"
-import SignIn from "../../../pages/Auth/SignIn"
-import EmailSignIn from "../../../pages/Auth/EmailSignIn"
 import { getState, setView, setState } from "../../../redux/Auth"
 import { AuthView } from "../../../redux/Auth/types"
-import SignUp from "../../../pages/Auth/SignUp"
-import GoogleSignUp from "../../../pages/Auth/GoogleSignUp"
-import ConnectGoogle from "../../../pages/Auth/ConnectGoogle"
 
 export default function User() {
   const [userTest, setUserTest] = useState(true)
@@ -34,29 +29,7 @@ export default function User() {
 
   const showSigninModal = () => {
     dispatch(setState(true))
-    dispatch(setView(AuthView.SIGNIN_VIEW))
-  }
-
-  const showCurrentView = (): JSX.Element => {
-    switch (currentView) {
-      case AuthView.SIGNIN_VIEW: {
-        return <SignIn />
-      }
-      case AuthView.GOOGLE_SIGNUP_VIEW: {
-        return <GoogleSignUp />
-      }
-      case AuthView.EMAIL_SIGNIN_VIEW: {
-        return <EmailSignIn />
-      }
-      case AuthView.SIGNUP_VIEW: {
-        return <SignUp />
-      }
-      case AuthView.CONNECT_GG_ACCOUNT_VIEW: {
-        return <ConnectGoogle />
-      }
-      default:
-        return <SignIn />
-    }
+    dispatch(setView(AuthView.SIGNIN))
   }
 
   return (
@@ -92,7 +65,7 @@ export default function User() {
             width={"fit-content"}
             centered
           >
-            {showCurrentView()}
+            {currentView}
           </Modal>
         </div>
       ) : (

@@ -25,10 +25,10 @@ export default function SignIn() {
         const apiResponse = res as APIResponse
 
         if (apiResponse.ec === messages.CONTINUE_SIGN_IN.ec) {
-          dispatch(setView(AuthView.GOOGLE_SIGNUP_VIEW))
+          dispatch(setView(AuthView.GOOGLE_SIGNUP))
           dispatch(setUser(apiResponse.data))
         } else if (apiResponse.ec === messages.CONNECT_GOOGLE_ACCOUNT.ec) {
-          dispatch(setView(AuthView.CONNECT_GG_ACCOUNT_VIEW))
+          dispatch(setView(AuthView.CONNECT_GG_ACCOUNT))
           dispatch(setUser(apiResponse.data.user))
 
           setAuthStorage(res.data)
@@ -42,7 +42,7 @@ export default function SignIn() {
   })
 
   const signInByEmail = () => {
-    dispatch(setView(AuthView.EMAIL_SIGNIN_VIEW))
+    dispatch(setView(AuthView.EMAIL_SIGNIN))
   }
 
   return (
