@@ -53,7 +53,7 @@ export default function SingUp() {
         <div>
           <Form
             name="normal_signup"
-            className="signup-form"
+            className="auth-form"
             initialValues={{ remember: true }}
             style={{ fontFamily: "Poppins" }}
             onFinish={signUpByEmail}

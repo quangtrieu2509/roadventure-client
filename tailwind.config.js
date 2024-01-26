@@ -24,7 +24,8 @@ module.exports = {
         background: '#F2F2F2',
         extraText: '#757575',
         extraButton: '#F0F0F0',
-        buttonHover2:'#ebebeb'
+        buttonHover2:'#ebebeb',
+        "extra-text": "#dddddd"
       },
     },
   },

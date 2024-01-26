@@ -1,4 +1,4 @@
-import { ExclamationCircleOutlined, PictureOutlined, SettingOutlined, StopOutlined, UserOutlined } from "@ant-design/icons"
+import { ExclamationCircleOutlined, HeartOutlined, PictureOutlined, SettingOutlined, StopOutlined, UserOutlined } from "@ant-design/icons"
 import Label from "../../components/Label"
 import Activities from "./Activities"
 import Media from "./Media"
@@ -6,6 +6,7 @@ import Trips from "./Trips"
 import Reviews from "./Reviews"
 import Empty from "./Empty"
 import { Skeleton } from "antd"
+import Saved from "./Saved"
 
 export const profileTabItems = [
   {
@@ -31,6 +32,39 @@ export const profileTabItems = [
   {
     label: "Travel Map",
     key: "5",
+    children: "Content of Travel Map",
+  }
+]
+
+export const ownerTabItems = [
+  {
+    label: "Activities",
+    key: "1",
+    children: <Activities/>,
+  },
+  {
+    label: "Trips",
+    key: "2",
+    children: <Trips/>,
+  },
+  {
+    label: "Reviews",
+    key: "3",
+    children: <Reviews/>,
+  },
+  {
+    label: "Media",
+    key: "4",
+    children: <Media/>,
+  },
+  {
+    label: "Saved",
+    key: "5",
+    children: <Saved/>,
+  },
+  {
+    label: "Travel Map",
+    key: "6",
     children: "Content of Travel Map",
   }
 ]

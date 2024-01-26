@@ -1,3 +1,5 @@
+import { IMAGE_PATH } from "../constants"
+
 type LSItem = {
   key: string
   value: string
@@ -19,6 +21,7 @@ export const removeLocalStorage = () => {
   localStorage.removeItem("username")
   localStorage.removeItem("familyName")
   localStorage.removeItem("givenName")
+  localStorage.removeItem("picture")
 }
 
 export const getLocalStorage = (...keys: Array<string>) => {
@@ -41,5 +44,6 @@ export const setAuthStorage = (data: any) => {
       { key: "username", value: user.username },
       { key: "familyName", value: user.familyName },
       { key: "givenName", value: user.givenName },
+      { key: "picture", value: user.picture ?? IMAGE_PATH.DEFAULT_AVATAR },
     )
 }

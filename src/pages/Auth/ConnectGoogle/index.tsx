@@ -54,7 +54,7 @@ export default function ConnectGoogle() {
 
           <Form
             name="normal_create"
-            className="create-form"
+            className="auth-form"
             initialValues={{ remember: true }}
             style={{ fontFamily: "Poppins" }}
             onFinish={onFinish}

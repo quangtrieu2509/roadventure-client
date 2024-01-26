@@ -67,7 +67,7 @@ export default function GoogleSignUp() {
 
           <Form
             name="normal_create"
-            className="create-form"
+            className="auth-form"
             initialValues={{ remember: true }}
             style={{ fontFamily: "Poppins" }}
             onFinish={createGoogleAccount}

@@ -6,6 +6,7 @@ import { IMAGE_PATH } from "../../../constants"
 import { userItems } from "../itemLists"
 import { getState, setView, setState } from "../../../redux/Auth"
 import { AuthView } from "../../../redux/Auth/types"
+import { getLocalStorage } from "../../../utils/Auth"
 
 export default function User() {
   const [userTest, setUserTest] = useState(true)
@@ -76,12 +77,12 @@ export default function User() {
             onOpenChange={() => {}}
             className="header-dropdown"
           >
-            <div className="header-item flex h-11 mx-1 rounded-full cursor-pointer">
+            <div className="header-item flex h-11 min-w-[2.75rem] mx-1 rounded-full cursor-pointer">
               <img
                 id="avatar-img"
                 alt="#"
-                src={IMAGE_PATH.DEFAULT_AVATAR}
-                className="image"
+                src={getLocalStorage("picture").picture}
+                className="image h-full rounded-full"
               />
             </div>
           </Dropdown>

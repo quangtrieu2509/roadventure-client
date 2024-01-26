@@ -5,5 +5,7 @@ export enum ENDPOINTS {
   GOOGLE_AUTH_CB = "/auth/google/callback",
   USER = "/user",
   TRIP = "/trip",
-  INTERACT_TRIP = "/trip/interact"
+  SAVED_TRIP = "/trip/saved",
+  INTERACT_TRIP = "/trip/interact",
+  TRIP_DETAIL = "/trip/detail"
 }

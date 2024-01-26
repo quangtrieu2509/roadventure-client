@@ -48,7 +48,7 @@ export default function EmailSignIn() {
         <div>
           <Form
             name="normal_signin"
-            className="signin-form"
+            className="auth-form"
             initialValues={{ remember: true }}
             style={{ fontFamily: "Poppins" }}
             onFinish={signInByEmail}

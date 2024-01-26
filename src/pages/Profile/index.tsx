@@ -3,17 +3,30 @@ import "./index.style.scss"
 import { Dropdown, Skeleton, Tabs } from "antd"
 import { IMAGE_PATH } from "../../constants"
 import { BarsOutlined, MessageOutlined, PlusOutlined, SettingOutlined } from "@ant-design/icons"
-import { loadingTabItems, profileActions, profileTabItems, settingActions } from "./itemLists"
+import { loadingTabItems, ownerTabItems, profileActions, profileTabItems, settingActions } from "./itemLists"
 import { useEffect, useState } from "react"
 import { apiCaller } from "../../api"
 import { userApi } from "../../api/user"
 import { useParams } from "react-router-dom"
 import { getLocalStorage } from "../../utils/Auth"
+import TripCreation from "../../components/Trip/TripCreation"
+
+interface IUserProfile {
+  id: string
+  picture: string
+  familyName: string
+  givenName: string
+  username: string
+  tripCount: number
+  followers: string[]
+  followingCount: number
+}
 
 export default function Profile() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<IUserProfile|null>(null)
   const [isOwner, setIsOwner] = useState<boolean>(false)
-  const [follow, setFollow] = useState<boolean>(false)
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [tripModal, setTripModal] = useState<boolean>(false)
   const params = useParams()
 
   const getUser = async () => {
@@ -26,8 +39,8 @@ export default function Profile() {
         setIsOwner(false)
         const followers = res.data.followers as Array<string>
         followers.includes(storage.id)
-        ? setFollow(true)
-        : setFollow(false)
+        ? setIsFollowing(true)
+        : setIsFollowing(false)
       } else {
         setIsOwner(true)
       } 
@@ -38,7 +51,7 @@ export default function Profile() {
   const followUser = async (action: boolean) => {
     await apiCaller(userApi.followUser(params.username ?? "", action))
 
-    setFollow(action)
+    setIsFollowing(action)
   }
 
   useEffect(() => {
@@ -54,20 +67,20 @@ export default function Profile() {
               {
                 !user
                 ? <Skeleton.Avatar active style={{ height: "7rem", width: "7rem", verticalAlign: "baseline" }}/>
-                : <img alt="#" src={IMAGE_PATH.DEFAULT_AVATAR} className="image h-full w-full rounded-full" />
+                : <img alt="#" src={user.picture ?? IMAGE_PATH.DEFAULT_AVATAR} className="image h-full w-full rounded-full" />
               }
             </div>
             {
               !user
-              ? <div className="ml-6 w-44 max-h-7">
+              ? <div className="ml-5 w-44 max-h-7">
                 <Skeleton active title={{ width: "inherit" }} paragraph={{ rows: 2, width: ["60%", "inherit"] }}/>
               </div>
-              : <div className="profile-info flex flex-col justify-center ml-6">
+              : <div className="profile-info flex flex-col justify-center ml-5">
                 <span className="text-2xl font-semibold mb-1.5">{`${user.familyName} ${user.givenName}`}</span>
                 <span className="text-sm text-extraText mb-1.5">{`@${user.username}`}</span>
                 <div className="text-sm">
                   <span className="interact-info-label">
-                    <span className="interact-info-result">{20}</span> posts
+                    <span className="interact-info-result">{user.tripCount}</span> trips
                   </span>
                   <span className="interact-info-label">
                     <span className="interact-info-result">{user.followers.length}</span> followers
@@ -84,7 +97,12 @@ export default function Profile() {
             ? <></>
             : isOwner
             ? <div className="profile-action flex items-center">
-              <span className="extra-form-button text-sm rounded-md cursor-pointer mr-4"><PlusOutlined className="mr-1"/> Make a trip</span>
+              <span 
+                className="extra-form-button text-sm rounded-md cursor-pointer mr-4"
+                onClick={() => {setTripModal(true)}}
+              >
+                <PlusOutlined className="mr-1"/> Make a trip
+              </span>
               <Dropdown
               menu={{ items: settingActions }}
               trigger={["click"]}
@@ -97,7 +115,7 @@ export default function Profile() {
             </div>
             : <div className="profile-action flex items-center">
               {
-                follow
+                isFollowing
                 ? <span 
                     className="extra-form-button text-sm rounded-md cursor-pointer mr-4"
                     onClick={() => followUser(false)}
@@ -124,7 +142,7 @@ export default function Profile() {
             ? <Tabs className="text-sm" items={loadingTabItems}/>
             : <Tabs
               className="text-sm"
-              items={profileTabItems}
+              items={isOwner ? ownerTabItems : profileTabItems}
               tabBarExtraContent={
                 isOwner ? null
                 : <Dropdown
@@ -141,6 +159,10 @@ export default function Profile() {
           }
         </div>
       </div>
+      <TripCreation 
+        isOpen={tripModal} 
+        onChangeState={(value: boolean) => setTripModal(value)}
+      />
     </div>
   )
 }
