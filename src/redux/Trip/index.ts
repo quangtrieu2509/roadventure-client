@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { privacies } from "../../constants/privacies"
+import { Destination } from "../../components/Trip/Destinations"
 
 type DestInfo = {
   text: string
@@ -11,19 +12,18 @@ type DestInfo = {
 interface TripState {
   create: {
     privacy: string
-    destinations: object[]
-    initerary: object[]
+    destinations: Destination[]
   }
   edit: {
     privacy: string
-    destinations: object[]
-    initerary: object[]
+    destinations: Destination[]
   }
   destInfo: DestInfo | null
   addedDest: {
     info: DestInfo | null
     position: number
   }
+  destHoverInfo: DestInfo | null
 }
 
 // Define the initial state using that type
@@ -31,18 +31,17 @@ const initialState: TripState = {
   create: {
     privacy: privacies.PUBLIC,
     destinations: [],
-    initerary: [],
   },
   edit: {
     privacy: privacies.PUBLIC,
     destinations: [],
-    initerary: [],
   },
   destInfo: null,
   addedDest: {
     info: null,
     position: 0,
   },
+  destHoverInfo: null
 }
 
 export const tripSlice = createSlice({
@@ -56,17 +55,25 @@ export const tripSlice = createSlice({
     setEditPrivacy: (state, action: PayloadAction<string>) => {
       state.edit.privacy = action.payload
     },
-    setCreateDestinations: (state, action: PayloadAction<object[]>) => {
+    setCreateDestinations: (state, action: PayloadAction<Destination[]>) => {
       state.create.destinations = action.payload
     },
-    setEditDestinations: (state, action: PayloadAction<object[]>) => {
+    updateCreateDescription: (
+      state, 
+      action: PayloadAction<{index: number, content: string}>
+    ) => {
+      const { index, content } = action.payload
+      state.create.destinations[index].description = content
+    },
+    updateEditDescription: (
+      state, 
+      action: PayloadAction<{index: number, content: string}>
+    ) => {
+      const { index, content } = action.payload
+      state.edit.destinations[index].description = content
+    },
+    setEditDestinations: (state, action: PayloadAction<Destination[]>) => {
       state.edit.destinations = action.payload
-    },
-    setCreateItinerary: (state, action: PayloadAction<object[]>) => {
-      state.create.initerary = action.payload
-    },
-    setEditItinerary: (state, action: PayloadAction<object[]>) => {
-      state.edit.initerary = action.payload
     },
     setDestInfo: (state, action: PayloadAction<DestInfo | null>) => {
       state.destInfo = action.payload
@@ -77,18 +84,22 @@ export const tripSlice = createSlice({
     ) => {
       state.addedDest = action.payload
     },
+    setDestHoverInfo: (state, action: PayloadAction<DestInfo | null>) => {
+      state.destInfo = action.payload
+    }
   },
 })
 
 export const {
   setEditPrivacy,
-  setEditItinerary,
   setCreateDestinations,
   setEditDestinations,
   setCreatePrivacy,
-  setCreateItinerary,
   setDestInfo,
-  setAddedDest
+  setAddedDest,
+  updateCreateDescription,
+  updateEditDescription,
+  setDestHoverInfo
 } = tripSlice.actions
 
 // // Other code such as selectors can use the imported `RootState` type

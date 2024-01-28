@@ -1,27 +1,20 @@
-import { MinusCircleOutlined } from "@ant-design/icons";
+import { EnvironmentOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import NoResult from "../../Profile/NoResult";
 import { useDispatch, useSelector } from "react-redux";
-import { getState, setCreateDestinations } from "../../../redux/Trip";
+import { getState, setCreateDestinations, updateCreateDescription } from "../../../redux/Trip";
+import TextArea from "antd/es/input/TextArea";
 
 export interface Destination {
   text: string
   placeName: string
   coordinates: number[]
+  description: string
 }
 
 export default function Destinations() {
-  // const [searchList, setSearchList] = useState<any>([])
   const destinations = useSelector(getState)
                         .create.destinations as Destination[]
   const dispatch = useDispatch()
-
-  // const handleChange = (newValue: string) => {
-  //   setSearchValue(newValue);
-  // };
-
-  // const handleSearch = (newValue: string) => {
-  //   setSearchList([...searchList, { value: newValue, text: newValue }])
-  // };
 
   const handleRemove = (index: number) => {
     dispatch(setCreateDestinations(
@@ -36,56 +29,49 @@ export default function Destinations() {
 
   return (
     <div className="font-normal w-full">
-      {/* <Space.Compact size="middle" className="w-full mb-4">
-        <span className="px-3 rounded-md rounded-e-none border border-solid border-[#d9d9d9] border-e-0 flex items-center bg-[#00000005]">
-          <SearchOutlined />
-        </span>
-        <Select
-          allowClear
-          showSearch
-          // value={searchValue}
-          placeholder="Search for destinations..."
-          defaultActiveFirstOption={true}
-          suffixIcon={false}
-          filterOption={false}
-          onSearch={handleSearch}
-          // onChange={handleChange}
-          onSelect={(value) => console.log(value)}
-          notFoundContent={null}
-          options={(searchList || []).map((d: { value: any; text: any; }) => ({
-            value: d.value,
-            label: d.text,
-          }))}
-          className="w-full"
-        />
-      </Space.Compact> */}
-
       {
         destinations.length === 0
-        ? <div className="min-h-[24rem]"><NoResult/></div>
-        : <div className="min-h-[24rem]">
+        ? <div className="min-h-[24rem] mt-1"><NoResult/></div>
+        : <div className="min-h-[24rem] mt-1">
           {
             destinations.map((des, index) => {
               return (
-                <div key={index}>
-                  <div className="destination-item flex justify-between pt-4 pb-4">
-                    <div className=" mr-4 flex flex-col justify-around">
-                      <div className=" font-semibold text-base">{des.text}</div>
-                      <div>{des.placeName}</div>
-                    </div>
-                    
-                    <div 
-                      className="flex items-center text-xl px-2 mx-1 my-2 rounded cursor-pointer hover:text-red-700 hover:bg-buttonHover smooth-trans"
-                      onClick={() => handleRemove(index)}
-                    >
-                      <MinusCircleOutlined/>
-                    </div>
+                <div key={index}  className="flex">
+                  <div className="flex flex-col items-center">
+                    <div className=" h-6 w-6 font-semibold bg-black rounded-full text-white text-center flex items-center justify-center">{index + 1}</div>
+                    <div className="h-full w-0 my-1 border-dotted border-0 border-r-4 border-dividerFill"></div>
                   </div>
-                  <div className={`h-[1px] w-full bg-dividerFill ${index === (destinations.length - 1) ? "hidden" : ""}`}/>
+                  <div className="w-full ml-4 mb-5">
+                    <div className="flex justify-between pb-3">
+                      <div className=" mr-4 flex flex-col justify-around">
+                        <div className=" font-semibold text-base">{des.text}</div>
+                        <div><EnvironmentOutlined className="mr-1.5"/>{des.placeName}</div>
+                      </div>
+                      
+                      <div 
+                        className="flex items-center text-xl px-3 my-1 rounded cursor-pointer hover:text-red-700 hover:bg-buttonHover smooth-trans"
+                        onClick={() => handleRemove(index)}
+                      >
+                        <MinusCircleOutlined/>
+                      </div>
+                    </div>
+                    <TextArea 
+                      rows={3} 
+                      placeholder="How's this destination?" 
+                      value={des.description}
+                      onChange={(e) => {
+                        // des.description = e.target.value
+                        // console.log(des.description)
+                        const payload = { index, content: e.target.value }
+                        dispatch(updateCreateDescription(payload))
+                      }}
+                    />
+                  </div>
                 </div>
               )
             })
           }
+          <div className=" font-semibold w-fit border-solid border-2 border-black rounded-full px-3 py-1">End</div>
         </div>
       }    
     </div>

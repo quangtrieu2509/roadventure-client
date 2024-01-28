@@ -57,7 +57,7 @@ export default function GeocoderControl(props: GeocoderControlProps) {
               // {...props.marker}
               longitude={location[0]}
               latitude={location[1]}
-              style={{ cursor: "pointer", top: "11px" }}
+              style={{ cursor: "pointer" }}
               onClick={e => {
                 // If we let the click event propagates to the map, it will immediately close the popup
                 // with `closeOnClick: true`

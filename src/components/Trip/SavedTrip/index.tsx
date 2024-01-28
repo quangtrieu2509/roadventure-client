@@ -18,7 +18,7 @@ export interface ISavedTrip {
   title: string
   description: string
   points: string
-  date?: Date
+  date?: Date[]
 }
 
 export default function SavedTrip(
@@ -65,16 +65,18 @@ export default function SavedTrip(
                     trigger={["click"]}
                     onOpenChange={() => {}}
                     >
-                      <div className="h-fit text-2xl px-1 rounded-md hover:bg-buttonHover hover:cursor-pointer">
+                      <div className="h-fit text-2xl px-1 rounded-md hover:bg-buttonHover hover:cursor-pointer mb-0.5">
                         <EllipsisOutlined/>
                       </div>
                   </Dropdown>
                 </div>
-                <div>
+                <div className={props.trip.date?.length ? "mb-0.5" : "hidden"}>
                   <CalendarOutlined/>
-                  <span className="ml-1.5">{props.trip.date?.toString()}</span>
+                  <span className="ml-1.5">
+                    {props.trip.date ? `${props.trip.date[0]} - ${props.trip.date[1]}` : ""}
+                  </span>
                 </div>
-                <div>
+                <div className="mb-0.5">
                   {props.trip.description}
                 </div>
               </div>

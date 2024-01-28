@@ -15,6 +15,7 @@ export default function Activities() {
     const res = await apiCaller(tripApi.getTripsOfUser(params.username ?? ""))
     
     if (res !== null) {
+      console.log(res.data)
       setResults(res.data)
     }
   }

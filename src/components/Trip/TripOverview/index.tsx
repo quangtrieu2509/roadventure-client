@@ -1,13 +1,17 @@
 import { Skeleton } from "antd"
 
 import "../index.style.scss"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import TripDetail from "../TripDetail"
 import TripHeader from "./TripHeader"
-import { CommentOutlined, HeartFilled, HeartOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
+import { CalendarOutlined, CommentOutlined, HeartFilled, HeartOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import { apiCaller } from "../../../api"
 import { tripApi } from "../../../api/trip"
 import { interactTypes } from "../../../constants"
+import { Map, type MapRef, Marker } from "react-map-gl"
+import { MAPBOX_API_KEY } from "../../../configs"
+import Pin from "../../../utils/Pin"
+import { setMapBounds } from "../../../utils/Trip"
 
 export interface ITripOverview {
   id: string
@@ -27,10 +31,10 @@ export interface ITripOverview {
   createdAt: Date
   title: string
   description: string
-  points: string
+  destinations: Array<[number, number]>
   privacy: string
   isOwner: boolean
-  date?: Date
+  date?: Date[]
 }
 
 export interface IInteract {
@@ -53,6 +57,7 @@ export default function TripOverview(
 ) {
   const [tripDetail, setTripDetail] = useState<boolean>(false)
   const [interact, setInteract] = useState<IInteract>(initInteract)
+  const [mapRef, setMapRef] = useState<MapRef|null>(null)
 
   const handleComment = () => {
     setTripDetail(true)
@@ -89,8 +94,15 @@ export default function TripOverview(
   useEffect(() => {
     if (props.trip) {
       setInteract(props.trip.interact)
+
     }
   }, [props.trip])
+
+  useEffect(() => {
+    if (props.trip && props.trip.destinations.length) {
+      setMapBounds(mapRef, props.trip.destinations)
+    }
+  }, [mapRef, props.trip])
 
   return (
     <div className="rounded-md px-6 pt-3.5 bg-white mb-4">
@@ -103,28 +115,63 @@ export default function TripOverview(
           !props.trip
           ? <Skeleton active paragraph={{ rows: 2 }}/>
           : <div>
-            <div className="text-base font-semibold cursor-pointer hover:underline" onClick={() => setTripDetail(true)}>
+            <div className="text-base font-semibold cursor-pointer hover:underline mb-0.5" onClick={() => setTripDetail(true)}>
               {props.trip.title}
             </div>
-            <div>
+            <div className={props.trip.date?.length ? "mb-0.5" : "hidden"}>
+              <CalendarOutlined/>
+              <span className="ml-1.5">
+                {props.trip.date ? `${props.trip.date[0]} - ${props.trip.date[1]}` : ""}
+              </span>
+            </div>
+            <div className="mb-1.5">
               {props.trip.description}
             </div>
-            <TripDetail 
-              isOpen={tripDetail} 
-              onChangeState={(value) => setTripDetail(value)}
-              tripOverview={
+            <div className={`${props.trip.destinations.length ? "h-80 w-full" : "hidden"}`}>
+              <Map
+                mapboxAccessToken={MAPBOX_API_KEY}
+                initialViewState={{
+                  longitude: 105.853333,
+                  latitude: 21.028333,
+                  zoom: 8
+                }}
+                style={{ width: "100%", height: "100%" }}
+                mapStyle="mapbox://styles/mapbox/streets-v9"
+                attributionControl={false}
+                interactive={false}
+                ref={setMapRef}
+              >
                 {
-                  ...props.trip, 
-                  interact
+                  props.trip.destinations.map((co, index) => (
+                    <Marker
+                      key={`marker-${index}`}
+                      longitude={co[0]}
+                      latitude={co[1]}
+                    >
+                      <Pin/>
+                    </Marker>
+                  ))
                 }
-              }
-              updateInteract={(value) => setInteract(value)}
-            />
+              </Map>
+            </div>
+            {
+              <TripDetail 
+                isOpen={tripDetail} 
+                onChangeState={(value) => setTripDetail(value)}
+                tripOverview={
+                  {
+                    ...props.trip, 
+                    interact
+                  }
+                }
+                updateInteract={(value) => setInteract(value)}
+              />
+            }
           </div>
         }
       </div>
       <div className="trip-footer">
-        <div className={!props.trip ? "hidden" : "py-1 mt-3.5 text-xs text-extraText"}>
+        <div className={!props.trip ? "hidden" : "py-1 mt-1.5 text-xs text-extraText"}>
           <span className={interact.likes === 0 ? "hidden" : "mr-4"}>
             {`${interact.likes} likes`}
           </span>

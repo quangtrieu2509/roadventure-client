@@ -80,10 +80,11 @@ export default function Home() {
             latitude: 21.028333,
             zoom: 8
           }}
-          style={{ width: "100%", height: "600px" }}
+          style={{ width: "100%", height: "600px",  }}
           mapStyle="mapbox://styles/mapbox/streets-v9"
           attributionControl={false}
-          // onClick={(event) => console.log(event) }
+          interactive={false}
+          
         > 
         
         <NavigationControl position="bottom-right"/>

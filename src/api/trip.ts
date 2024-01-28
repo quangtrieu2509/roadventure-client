@@ -19,6 +19,10 @@ export const tripApi = {
         { type, value, content }
       )
     },
+  createTrip:
+    (data: any) => (): Promise<AxiosResponse<any, any>> => {
+      return axiosClient.post(ENDPOINTS.TRIP, data)
+    },
   getTripDetail:
     (tripId: string) => (): Promise<AxiosResponse<any, any>> => {
       return axiosClient.get(ENDPOINTS.TRIP_DETAIL + `/${tripId}`)

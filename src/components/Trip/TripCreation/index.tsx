@@ -1,37 +1,28 @@
 import { Button, DatePicker, Form, Input, Modal, Select, Tabs } from "antd";
-// import {
-//   GoogleMap
-// } from "@react-google-maps/api";
-import GoogleWrapper from "../../GoogleMap";
-// import { useMemo } from "react";
 import "./index.style.scss"
 import TextArea from "antd/es/input/TextArea";
 import { privacyIcons } from "../../../constants/privacies";
 import Destinations, { Destination } from "../Destinations";
-import Itinerary from "../Itinerary";
 import { getState, setAddedDest, setCreateDestinations, setCreatePrivacy, setDestInfo } from "../../../redux/Trip";
 import { useDispatch, useSelector } from "react-redux";
 import { MAPBOX_API_KEY } from "../../../configs";
-import { GeolocateControl, Layer, Map, Marker, NavigationControl, Popup, Source } from "react-map-gl";
+import { GeolocateControl, Map, Marker, NavigationControl, Popup } from "react-map-gl";
 import GeocoderControl from "../../GeocoderControl";
 import { useMemo } from "react";
 import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import Pin from "../../../utils/Pin";
+import axiosClient from "../../../api/axiosClient";
+import { apiCaller } from "../../../api";
+import { tripApi } from "../../../api/trip";
 
 const { RangePicker } = DatePicker;
 
-// type LatLngLiteral = google.maps.LatLngLiteral;
 
 const tabItems = [
   {
     label: "Destinations",
     key: "1",
     children: <Destinations/>,
-  },
-  {
-    label: "Itinerary",
-    key: "2",
-    children: <Itinerary/>,
   }
 ]
 
@@ -41,10 +32,6 @@ type Props = {
 };
 
 export default function TripCreation(props: Props) {
-  // const center = useMemo<LatLngLiteral>(
-  //   () => ({ lat: 43.45, lng: -80.49 }),
-  //   []
-  // );
   const privacy = useSelector(getState).create.privacy
   const dests = useSelector(getState).create.destinations as Destination[]
   const { destInfo, addedDest } = useSelector(getState)
@@ -75,7 +62,7 @@ export default function TripCreation(props: Props) {
   )
 
   const handleAddToTrip = () => {
-    dispatch(setCreateDestinations([...dests, destInfo]))
+    dispatch(setCreateDestinations([...dests, { ...destInfo, description: "" }]))
     dispatch(setDestInfo(null))
   }
 
@@ -87,6 +74,16 @@ export default function TripCreation(props: Props) {
       )
     )
     dispatch(setAddedDest({ info: null, position: 0 }))
+  }
+
+  const handleFinish = async (value: any) => {
+    const data = { ...value, privacy, destinations: dests }
+    const res = await apiCaller(tripApi.createTrip(data))
+
+    if (res !== null) {
+      alert("Done!")
+      props.onChangeState(false)
+    }
   }
 
   return (
@@ -131,13 +128,10 @@ export default function TripCreation(props: Props) {
               layout={"vertical"}
               initialValues={{ remember: true }}
               style={{ fontFamily: "Poppins" }}
-              onFinish={(value) => {
-                const date = new Date(value.date[0])
-                console.log(date.getFullYear())
-              }}
+              onFinish={handleFinish}
             >
               <Form.Item
-                name="email"
+                name="title"
                 rules={[
                   {
                     required: true,
@@ -148,7 +142,7 @@ export default function TripCreation(props: Props) {
               >
                 <Input placeholder="Input trip title"/>
               </Form.Item>
-              <Form.Item label="Description">
+              <Form.Item label="Description" name="description">
                 <TextArea rows={3} placeholder="What's this trip about?"/>
               </Form.Item>
               <Form.Item label="Date of trip" name="date">
@@ -162,7 +156,6 @@ export default function TripCreation(props: Props) {
             </Form>
           </div>
           <div className="w-[45%]">
-            
             <Map
               mapboxAccessToken={MAPBOX_API_KEY}
               initialViewState={{
