@@ -9,6 +9,6 @@ export const setMapBounds = (mapRef: MapRef|null, marksList: any) => {
       [minLng, minLat],
       [maxLng, maxLat]
     ],
-    { padding: 40, duration: 50 }
+    { padding: 60, duration: 50 }
   )
 }

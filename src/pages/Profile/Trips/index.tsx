@@ -6,9 +6,10 @@ import TripOverview, { ITripOverview } from "../../../components/Trip/TripOvervi
 import { apiCaller } from "../../../api";
 import { tripApi } from "../../../api/trip";
 import { useEffect, useState } from "react";
+import { ITripDetail } from "../../../components/Trip/TripDetail";
 
 export default function Trips() {
-  const [results, setResults] = useState<ITripOverview[] | null[]>([null])
+  const [results, setResults] = useState<ITripDetail[] | null[]>([null])
   const params = useParams()
 
   const getTrips = async () => {

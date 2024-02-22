@@ -5,35 +5,42 @@ import { privacies, privacyIcons } from "../../../../constants/privacies"
 import { EllipsisOutlined } from "@ant-design/icons"
 import { actions, ownerActions } from "../../actionLists"
 import { useNavigate } from "react-router-dom"
+import { ITripDetail } from "../../TripDetail"
 
 export default function TripHeader(
   props: {
-    trip: ITripOverview | null
+    owner: {
+      picture: string
+      id: string
+      username: string
+      familyName: string
+      givenName: string
+    } | null
+    privacy: string
+    createdAt: Date
     isOwner?: boolean
-  } = { trip: null, isOwner: false }
+  }
 ) {
   const navigate = useNavigate()
 
   const goToProfile = () => {
-    navigate(ROUTES.PROFILE_BASE + props.trip?.owner.username)
+    navigate(ROUTES.PROFILE_BASE + props.owner?.username)
   }
 
   return (
     <div className="trip-header h-10 flex mb-3.5">
       <div className="h-10 max-w-[2.5rem] mr-3">
         {
-        // (!props.trip || 1) ?
-        !props.trip ?
-          <Skeleton.Avatar active style={{ height: "2.5rem", width: "2.5rem", verticalAlign: "baseline" }}/> :
-          <img alt="#" src={props.trip.owner.picture ?? IMAGE_PATH.DEFAULT_AVATAR} 
+          !props.owner 
+          ? <Skeleton.Avatar active style={{ height: "2.5rem", width: "2.5rem", verticalAlign: "baseline" }}/> 
+          : <img alt="#" src={props.owner.picture ?? IMAGE_PATH.DEFAULT_AVATAR} 
             className="image h-full rounded-full cursor-pointer" 
             onClick={goToProfile}
           />
         }
       </div>
       {
-        // (!props.trip || 1) ?
-        !props.trip
+        !props.owner
         ? <div className="w-full flex items-center">
           <Skeleton.Input active/>
         </div>
@@ -41,14 +48,14 @@ export default function TripHeader(
           <div className=" font-semibold cursor-pointer"
             onClick={goToProfile}
           >
-            {`${props.trip.owner.familyName} ${props.trip.owner.givenName}`}
+            {`${props.owner.familyName} ${props.owner.givenName}`}
           </div>
           <div className="flex items-center text-xs text-extraText h-4">
-            <span>{props.trip.createdAt.toString()}</span>
+            <span>{(new Date(props.createdAt).toDateString())}</span>
             <span className="mx-1.5"> . </span>
             <span>
               {
-                props.trip.privacy === privacies.PUBLIC ?
+                props.privacy === privacies.PUBLIC ?
                 privacyIcons.PUBLIC :
                 privacyIcons.PRIVATE
               }
@@ -57,7 +64,7 @@ export default function TripHeader(
         </div>
       }
       {
-        !props.trip 
+        !props.owner 
         ? <></>
         : <Dropdown
               menu={{ items: props.isOwner ? ownerActions : actions }}

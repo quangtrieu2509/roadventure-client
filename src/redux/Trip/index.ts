@@ -8,6 +8,13 @@ type DestInfo = {
   coordinates: number[]
 }
 
+type Interact = {
+  liked: boolean
+  likes: number
+  saved: boolean
+  comments: number
+}
+
 // Define a type for the slice state
 interface TripState {
   create: {
@@ -24,6 +31,9 @@ interface TripState {
     position: number
   }
   destHoverInfo: DestInfo | null
+  interacts: {
+    [id: string] : Interact
+  }
 }
 
 // Define the initial state using that type
@@ -41,7 +51,8 @@ const initialState: TripState = {
     info: null,
     position: 0,
   },
-  destHoverInfo: null
+  destHoverInfo: null,
+  interacts: {}
 }
 
 export const tripSlice = createSlice({
@@ -85,7 +96,13 @@ export const tripSlice = createSlice({
       state.addedDest = action.payload
     },
     setDestHoverInfo: (state, action: PayloadAction<DestInfo | null>) => {
-      state.destInfo = action.payload
+      state.destHoverInfo = action.payload
+    },
+    setInteract: (
+      state, 
+      action: PayloadAction<{id: string, interact: Interact}>
+    ) => {
+      state.interacts[action.payload.id] = action.payload.interact
     }
   },
 })
@@ -99,7 +116,8 @@ export const {
   setAddedDest,
   updateCreateDescription,
   updateEditDescription,
-  setDestHoverInfo
+  setDestHoverInfo,
+  setInteract
 } = tripSlice.actions
 
 // // Other code such as selectors can use the imported `RootState` type

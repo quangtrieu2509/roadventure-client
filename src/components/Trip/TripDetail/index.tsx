@@ -1,7 +1,7 @@
 import { Modal, Skeleton } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import "./index.style.scss"
-import { IInteract, ITripOverview, initInteract } from "../TripOverview";
+import { IInteract, initInteract } from "../TripOverview";
 import TripHeader from "../TripOverview/TripHeader";
 import { CalendarOutlined, CommentOutlined, EnvironmentOutlined, HeartFilled, HeartOutlined, LikeFilled, LikeOutlined, SendOutlined } from "@ant-design/icons";
 import { apiCaller } from "../../../api";
@@ -19,14 +19,20 @@ import { getState, setDestHoverInfo } from "../../../redux/Trip";
 
 type Props = {
   isOpen?: boolean
-  tripOverview: ITripOverview
+  tripOverview: ITripDetail
   onChangeState: (newState: boolean) => void
   updateInteract?: (interact: IInteract) => void
 };
 
 export interface ITripDetail {
   id: string
-  ownerId: string
+  owner: {
+    id: string
+    givenName: string
+    familyName: string
+    username: string
+    picture: string
+  }
   interact: {
     liked: boolean
     saved: boolean
@@ -42,6 +48,7 @@ export interface ITripDetail {
     coordinates: number[]
     description: string
   }>
+  comments: Comment[]
   privacy: string
   isOwner: boolean
   date?: Date[]
@@ -92,9 +99,7 @@ export default function TripDetail(props: Props) {
 
     const newInteract = { ...interact, comments: interact.comments + 1 }
     setInteract(newInteract)
-    if (props.updateInteract) {
-      props.updateInteract(newInteract)
-    } 
+    props.updateInteract && props.updateInteract(newInteract)
   }
 
   const handleLike = async () => {
@@ -107,15 +112,13 @@ export default function TripDetail(props: Props) {
       )
     )
 
-    let newInteract: IInteract
+    let newInteract
     interact.liked
     ? newInteract = { ...interact, liked: !liked, likes: likes - 1 }
     : newInteract = { ...interact, liked: !liked, likes: likes + 1 }
 
-    setInteract(newInteract)
-    if (props.updateInteract) {
-      props.updateInteract(newInteract)
-    } 
+    setInteract(newInteract) 
+    props.updateInteract && props.updateInteract(newInteract)
   }
   const handleSave = async () => {
     const { saved } = interact
@@ -128,30 +131,30 @@ export default function TripDetail(props: Props) {
     )
 
     setInteract({ ...interact, saved: !saved })
-    if (props.updateInteract) {
-      props.updateInteract({ ...interact, saved: !saved })
-    } 
+    props.updateInteract && props.updateInteract({ ...interact, saved: !saved })
   }
 
   useEffect(() => {
-    setTrip({ ...props.tripOverview, ownerId: "",destinations: [] })
-    setInteract(props.tripOverview.interact)
+    setTrip({ ...props.tripOverview })
   }, [])
 
-  const getTripDetail = async () => {
-    const res = await apiCaller(
-      tripApi.getTripDetail(props.tripOverview.id)
-    )
+  // const getTripDetail = async () => {
+  //   const res = await apiCaller(
+  //     tripApi.getTripDetail(props.tripOverview.id)
+  //   )
 
-    if (res !== null) {
-      console.log({ ...trip, ...res.data })
-      setTrip({ ...trip, ...res.data })
-      setComments(res.data.comments)
-    }
-  }
+  //   if (res !== null) {
+  //     console.log({ ...trip, ...res.data })
+  //     setTrip({ ...trip, ...res.data })
+  //     setComments(res.data.comments)
+  //   }
+  // }
 
   useEffect(() => {
-    if (props.isOpen) getTripDetail()
+    if (props.isOpen){
+      setComments(props.tripOverview.comments)
+      setInteract(props.tripOverview.interact)
+    } 
   }, [props.isOpen])
 
   const pins = useMemo(
@@ -174,13 +177,12 @@ export default function TripDetail(props: Props) {
     [trip]
   )
 
+  // set bound for map
   useEffect(() => {
     if (trip !== null && trip.destinations.length) {
       setMapBounds(mapRef, trip.destinations.map((dest) => dest.coordinates))
     }
-  }, [trip])
-
-  console.log("this is trip: ", trip)
+  }, [trip, mapRef])
 
   return (
     <div>
@@ -196,7 +198,9 @@ export default function TripDetail(props: Props) {
         <div className="flex h-full" >
           <div className="w-[55%] pr-2 overflow-y-scroll overflow-x-hidden">
             <TripHeader 
-              trip={props.tripOverview} 
+              owner={props.tripOverview.owner}
+              privacy={props.tripOverview.privacy}
+              createdAt={props.tripOverview.createdAt} 
               isOwner={props.tripOverview.isOwner}
             />
             <div className="trip-content">
@@ -207,12 +211,17 @@ export default function TripDetail(props: Props) {
                 <div className="text-base font-semibold mb-0.5">
                   {trip.title}
                 </div>
-                <div className={trip.date?.length ? "mb-0.5" : "hidden"}>
-                  <CalendarOutlined/>
-                  <span className="ml-1.5">
-                    {trip.date ? `${trip.date[0]} - ${trip.date[1]}` : ""}
-                  </span>
-                </div>
+                {
+                  trip.date !== undefined 
+                  && trip.date[0] !== undefined
+                  ? <div className="mb-0.5">
+                      <CalendarOutlined/>
+                      <span className="ml-1.5">
+                        {`${(new Date(trip.date[0])).toLocaleDateString()} - ${(new Date(trip.date[1])).toLocaleDateString()}`}
+                      </span>
+                    </div>
+                  : <></>
+                }
                 <div className="mb-1.5">
                   {trip.description}
                 </div>
@@ -334,7 +343,7 @@ export default function TripDetail(props: Props) {
                           >
                             {`${value.user.familyName} ${value.user.givenName}`}
                           </span>
-                          <span className=" ml-2">{value.createdAt.toString()}</span>
+                          <span className=" ml-2">{(new Date(value.createdAt).toLocaleString())}</span>
                         </div>
                         <div>
                           {value.content}
@@ -347,48 +356,43 @@ export default function TripDetail(props: Props) {
             </div>
           </div>
           <div className="w-[45%]">
-            {
-              props.isOpen
-              ? <Map
-                mapboxAccessToken={MAPBOX_API_KEY}
-                initialViewState={{
-                  longitude: 105.853333,
-                  latitude: 21.028333,
-                  zoom: 8
-                }}
-                style={{ width: "100%", height: "100%" }}
-                mapStyle="mapbox://styles/mapbox/streets-v9"
-                attributionControl={false}
-                ref={setMapRef}
-              >
+            <Map
+              mapboxAccessToken={MAPBOX_API_KEY}
+              initialViewState={{
+                longitude: 105.853333,
+                latitude: 21.028333,
+                zoom: 8
+              }}
+              style={{ width: "100%", height: "100%" }}
+              mapStyle="mapbox://styles/mapbox/streets-v9"
+              attributionControl={false}
+              ref={setMapRef}
+            >
 
-                <NavigationControl position="bottom-right"/>
-                <GeolocateControl
-                  positionOptions={{ enableHighAccuracy: true }}
-                  trackUserLocation={true}
-                  position="bottom-right"
-                />
+              <NavigationControl position="bottom-right"/>
+              <GeolocateControl
+                positionOptions={{ enableHighAccuracy: true }}
+                trackUserLocation={true}
+                position="bottom-right"
+              />
 
-                {pins}
+              {pins}
 
-                {destHoverInfo.info && (
-                  <Popup
-                    anchor="top"
-                    longitude={destHoverInfo.info.coordinates[0]}
-                    latitude={destHoverInfo.info.coordinates[1]}
-                    onClose={
-                      () => dispatch(setDestHoverInfo(null))
-                    }
-                    style={{ fontFamily: "Poppins" }}
-                  >
-                    <div className=" text-sm font-semibold my-1">{destHoverInfo.info.text}</div>
-                    <div className="mb-2">{destHoverInfo.info.placeName}</div>
-                  </Popup>
-                )}  
-              </Map>
-              : <></>
-            }
-
+              {destHoverInfo && (
+                <Popup
+                  anchor="top"
+                  longitude={destHoverInfo.coordinates[0]}
+                  latitude={destHoverInfo.coordinates[1]}
+                  onClose={
+                    () => dispatch(setDestHoverInfo(null))
+                  }
+                  style={{ fontFamily: "Poppins" }}
+                >
+                  <div className=" text-sm font-semibold my-1">{destHoverInfo.text}</div>
+                  <div className="mb-2">{destHoverInfo.placeName}</div>
+                </Popup>
+              )}  
+            </Map>
           </div>
         </div>
       </Modal>

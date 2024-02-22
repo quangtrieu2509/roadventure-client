@@ -70,12 +70,17 @@ export default function SavedTrip(
                       </div>
                   </Dropdown>
                 </div>
-                <div className={props.trip.date?.length ? "mb-0.5" : "hidden"}>
-                  <CalendarOutlined/>
-                  <span className="ml-1.5">
-                    {props.trip.date ? `${props.trip.date[0]} - ${props.trip.date[1]}` : ""}
-                  </span>
-                </div>
+                {
+                  props.trip.date !== undefined 
+                  && props.trip.date[0] !== undefined
+                  ? <div className="mb-0.5">
+                      <CalendarOutlined/>
+                      <span className="ml-1.5">
+                        {`${(new Date(props.trip.date[0])).toLocaleDateString()} - ${(new Date(props.trip.date[1])).toLocaleDateString()}`}
+                      </span>
+                    </div>
+                  : <></>
+                }
                 <div className="mb-0.5">
                   {props.trip.description}
                 </div>
